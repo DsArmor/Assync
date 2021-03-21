@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/start"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#00BCA9A9"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -116,7 +118,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="203dp"
+        android:layout_width="200dp"
         android:layout_height="625dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -241,25 +243,48 @@
 
     <EditText
         android:id="@+id/count_of_product"
-        android:layout_width="193dp"
-        android:layout_height="40dp"
-        android:layout_marginBottom="64dp"
+        android:layout_width="176dp"
+        android:layout_height="43dp"
         android:ems="10"
         android:hint="Количество товара"
         android:inputType="phone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/add"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.145"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:text="ADD"
         app:backgroundTint="#CC3030"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.242"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="82dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="56dp"
+        android:text="Start"
+        app:backgroundTint="#230A0A"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/count_of_product" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Начало рабочей смены"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintStart_toEndOf="@+id/count_of_product" />
 </androidx.constraintlayout.widget.ConstraintLayout>
