@@ -1,5 +1,6 @@
 package com.example.assync.singltone;
 
+import com.example.assync.Automate;
 import com.example.assync.interfaces.IProduct;
 
 public class Courier {
@@ -11,8 +12,8 @@ public class Courier {
         }
         return instance;
     }
-
-    public void putProduct(IProduct product){
+    //TODO сделай так, чтобы курьер принимал автомат, тип продукта и накладывал в него товары соответсвующие имени
+    public void putProduct(String product, Automate automate){
 
     }
 }
