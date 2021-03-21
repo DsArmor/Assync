@@ -9,4 +9,9 @@ public class Pepsi implements IProduct {
     public String getName() {
         return name;
     }
+
+    @Override
+    public int cost() {
+        return 51;
+    }
 }

@@ -9,4 +9,9 @@ public class Popcorn implements IProduct {
     public String getName() {
         return name;
     }
+
+    @Override
+    public int cost() {
+        return 400;
+    }
 }
