@@ -2,7 +2,15 @@ package com.example.assync;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.example.assync.singltone.Courier;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,10 +46,74 @@ public class MainActivity extends AppCompatActivity {
     //Поток из автоматов
     //одновременная обработка 4 автоматов
     //каждый студент своим действием слипает автомат
+    String[] list_of_products = {"CocaCola", "Pepsi", "Popcorn", "Shawarma"};
+    String[] list_of_automates = {"1", "2", "3", "4"};
 
+    @SuppressLint("SetTextI18n")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Создание всех объектов
+        Courier courier = Courier.getInstance();
+        Automate automate1 = new Automate();
+        Automate automate2 = new Automate();
+        Automate automate3 = new Automate();
+        Automate automate4 = new Automate();
+        Student[] students = new Student[20];
+
+        //инициализация всего xml
+        TextView machine1 = (TextView)findViewById(R.id.machine1);
+        machine1.setText("First automate");
+        TextView status1 = (TextView)findViewById(R.id.status1);
+        TextView sum1 = (TextView)findViewById(R.id.sum_1);
+        TextView products1 = (TextView)findViewById(R.id.products_1);
+        TextView students1 = (TextView)findViewById(R.id.students_1);
+
+        TextView machine2 = (TextView)findViewById(R.id.machine2);
+        machine2.setText("Second automate");
+        TextView status2 = (TextView)findViewById(R.id.status2);
+        TextView sum2 = (TextView)findViewById(R.id.sum_2);
+        TextView products2 = (TextView)findViewById(R.id.products_2);
+        TextView students2 = (TextView)findViewById(R.id.students_2);
+
+
+        TextView machine3 = (TextView)findViewById(R.id.machine3);
+        machine3.setText("Third automate");
+        TextView status3 = (TextView)findViewById(R.id.status3);
+        TextView sum3 = (TextView)findViewById(R.id.sum_3);
+        TextView products3 = (TextView)findViewById(R.id.products_3);
+        TextView students3 = (TextView)findViewById(R.id.students_3);
+
+
+        TextView machine4 = (TextView)findViewById(R.id.machine4);
+        machine4.setText("Fourth automate");
+        TextView status4 = (TextView)findViewById(R.id.status4);
+        TextView sum4 = (TextView)findViewById(R.id.sum_4);
+        TextView products4 = (TextView)findViewById(R.id.products_4);
+        TextView students4 = (TextView)findViewById(R.id.students_4);
+
+        TextView count_of_products = (TextView)findViewById(R.id.count_of_product);
+        ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
+
+        Button add = (Button)findViewById(R.id.add_products);
+        Button start = (Button)findViewById(R.id.start_game);
+
+        //обработка spinners для продуктов и автоматов
+        ArrayAdapter<String> adapter_of_automates= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_of_automates);
+        adapter_of_automates.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter_of_products = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_of_products);
+        adapter_of_products.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spinner_of_automates = (Spinner) findViewById(R.id.spinner_of_automates);
+        spinner_of_automates.setAdapter(adapter_of_automates);
+
+        Spinner spinner_of_products = (Spinner) findViewById(R.id.spinner_of_products);
+        spinner_of_products.setAdapter(adapter_of_products);
+
+
+        String selected_product= spinner_of_products.getSelectedItem().toString();
+        String selected_automate = spinner_of_automates.getSelectedItem().toString();
+
     }
 }

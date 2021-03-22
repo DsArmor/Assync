@@ -1,20 +1,30 @@
 package com.example.assync;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.assync.delivery.DeliveryCocaCola;
 import com.example.assync.delivery.DeliveryPepsi;
 import com.example.assync.delivery.DeliveryPopcorn;
 import com.example.assync.delivery.DeliveryShawarma;
+import com.example.assync.interfaces.IDelivery;
 import com.example.assync.interfaces.IProduct;
 import com.example.assync.product.CocaCola;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class Automate {
-    private List<IProduct> CocaCola = new ArrayList<>();
-    private List<IProduct> Pepsi = new ArrayList<>();
-    private List<IProduct> Popcorn = new ArrayList<>();
-    private List<IProduct> Shawarma = new ArrayList<>();
+//    private List<IProduct> CocaCola = new ArrayList<>();
+//    private List<IProduct> Pepsi = new ArrayList<>();
+//    private List<IProduct> Popcorn = new ArrayList<>();
+//    private List<IProduct> Shawarma = new ArrayList<>();
     public String idleTime(){
         return "idle time";
     }
@@ -27,24 +37,40 @@ public class Automate {
     public String issue(){
         return "issue";
     }
-    DeliveryCocaCola delCoca= new DeliveryCocaCola();
-    DeliveryPepsi delPepsi = new DeliveryPepsi();
-    DeliveryPopcorn delPopcorn = new DeliveryPopcorn();
-    DeliveryShawarma delShawarma = new DeliveryShawarma();
-    public void getProduct(String product){
-        switch (product){
-            case "CocaCola":
-                CocaCola.add(delCoca.Delivery());
-                break;
-            case "Pepsi":
-                Pepsi.add(delPepsi.Delivery());
-                break;
-            case "Popcorn":
-                Popcorn.add(delPopcorn.Delivery());
-            case "Shawarma":
-                Shawarma.add(delShawarma.Delivery());
+
+    Map<IProduct, Integer> products= new TreeMap<>();
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void getProduct(List<IDelivery> deliveries){
+        for (IDelivery current : deliveries){
+            IProduct product = current.Delivery();
+            int count = products.getOrDefault(product, 0);
+            products.put(product, count+1);
+        }
+    }
+    //TODO функции для возможности удаления тех или иных товаров
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    boolean BuyProduct(IProduct product) {
+        int count = products.getOrDefault(product, 0);
+        if (count > 0) {
+            products.put(product, count - 1);
+            return true;
+        } else {
+            return false;
         }
     }
     //TODO функции для возвращения количества тех или иных товаров
-    //TODO функции для возможности удаления тех или иных товаров
+    @Override
+    public String toString() {
+        String out = "";
+
+        TreeSet<IProduct> keys = new TreeSet<>(products.keySet());
+
+        for (IProduct product : keys) {
+            out += product.getName() + " : " +products.get(product) + "\n";
+        }
+
+        return out;
+    }
+
+
 }
