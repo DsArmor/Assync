@@ -14,4 +14,8 @@ public class Shawarma implements IProduct {
     public int cost() {
         return 120;
     }
+    @Override
+    public int compareTo(IProduct product) {
+        return getName().compareTo(product.getName());
+    }
 }

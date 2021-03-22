@@ -1,6 +1,6 @@
 package com.example.assync.interfaces;
 
-public interface IProduct {
+public interface IProduct extends Comparable<IProduct>{
     String getName();
     int cost();
 }

@@ -14,4 +14,8 @@ public class Pepsi implements IProduct {
     public int cost() {
         return 51;
     }
+    @Override
+    public int compareTo(IProduct product) {
+        return getName().compareTo(product.getName());
+    }
 }

@@ -1,11 +1,15 @@
 package com.example.assync;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,18 +53,37 @@ public class MainActivity extends AppCompatActivity {
     String[] list_of_products = {"CocaCola", "Pepsi", "Popcorn", "Shawarma"};
     String[] list_of_automates = {"1", "2", "3", "4"};
 
+    Automate automate1 = new Automate();
+    Automate automate2 = new Automate();
+    Automate automate3 = new Automate();
+    Automate automate4 = new Automate();
+    Student[] students = new Student[20];
+    void putStudents(Student[] students){
+        for (Student student: students){
+
+        }
+    }
+    Automate current_automate(String automate){
+        switch (automate){
+            case "1":
+                return automate1;
+            case "2":
+                return automate2;
+            case "3":
+                return automate3;
+            case "4":
+                return automate4;
+        }
+        return null;
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Создание всех объектов
+
         Courier courier = Courier.getInstance();
-        Automate automate1 = new Automate();
-        Automate automate2 = new Automate();
-        Automate automate3 = new Automate();
-        Automate automate4 = new Automate();
-        Student[] students = new Student[20];
 
         //инициализация всего xml
         TextView machine1 = (TextView)findViewById(R.id.machine1);
@@ -93,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         TextView products4 = (TextView)findViewById(R.id.products_4);
         TextView students4 = (TextView)findViewById(R.id.students_4);
 
-        TextView count_of_products = (TextView)findViewById(R.id.count_of_product);
+        EditText count_of_products = findViewById(R.id.count_of_products);
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
         Button add = (Button)findViewById(R.id.add_products);
@@ -112,8 +135,29 @@ public class MainActivity extends AppCompatActivity {
         spinner_of_products.setAdapter(adapter_of_products);
 
 
-        String selected_product= spinner_of_products.getSelectedItem().toString();
-        String selected_automate = spinner_of_automates.getSelectedItem().toString();
+
+
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                String selected_product= spinner_of_products.getSelectedItem().toString();
+                String selected_automate = spinner_of_automates.getSelectedItem().toString();
+
+                System.out.println(count_of_products.getText().toString());
+                System.out.println(selected_product);
+                System.out.println(selected_automate);
+
+                courier.putProduct(selected_product, current_automate(selected_automate), Integer.parseInt(count_of_products.getText().toString()));
+                products1.setText(automate1.toString());
+                products2.setText(automate2.toString());
+                products3.setText(automate3.toString());
+                products4.setText(automate4.toString());
+            }
+        });
+
+
 
     }
 }
