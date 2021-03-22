@@ -14,4 +14,8 @@ public class Popcorn implements IProduct {
     public int cost() {
         return 400;
     }
+    @Override
+    public int compareTo(IProduct product) {
+        return getName().compareTo(product.getName());
+    }
 }

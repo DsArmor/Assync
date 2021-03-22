@@ -4,27 +4,16 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.assync.delivery.DeliveryCocaCola;
-import com.example.assync.delivery.DeliveryPepsi;
-import com.example.assync.delivery.DeliveryPopcorn;
-import com.example.assync.delivery.DeliveryShawarma;
 import com.example.assync.interfaces.IDelivery;
 import com.example.assync.interfaces.IProduct;
-import com.example.assync.product.CocaCola;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class Automate {
-//    private List<IProduct> CocaCola = new ArrayList<>();
-//    private List<IProduct> Pepsi = new ArrayList<>();
-//    private List<IProduct> Popcorn = new ArrayList<>();
-//    private List<IProduct> Shawarma = new ArrayList<>();
+
     public String idleTime(){
         return "idle time";
     }
@@ -47,7 +36,7 @@ public class Automate {
             products.put(product, count+1);
         }
     }
-    //TODO функции для возможности удаления тех или иных товаров
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     boolean BuyProduct(IProduct product) {
         int count = products.getOrDefault(product, 0);
@@ -58,7 +47,7 @@ public class Automate {
             return false;
         }
     }
-    //TODO функции для возвращения количества тех или иных товаров
+
     @Override
     public String toString() {
         String out = "";
@@ -71,6 +60,4 @@ public class Automate {
 
         return out;
     }
-
-
 }

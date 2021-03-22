@@ -14,4 +14,9 @@ public class CocaCola implements IProduct {
     public int cost() {
         return 50;
     }
+
+    @Override
+    public int compareTo(IProduct product) {
+        return getName().compareTo(product.getName());
+    }
 }
