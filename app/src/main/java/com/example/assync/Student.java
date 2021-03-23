@@ -11,7 +11,6 @@ import com.example.assync.product.Popcorn;
 import com.example.assync.product.Shawarma;
 
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 public class Student {
@@ -53,8 +52,8 @@ public class Student {
             }
             i++;
         }
-        automate.status = Status.reception;
-        int temp = (int)(Math.random()*5);
+
+        int temp = (int)(Math.random()*5+1);
         try {
             TimeUnit.SECONDS.sleep(temp);
         } catch (InterruptedException e) {
@@ -65,8 +64,7 @@ public class Student {
 
     }
     public void buy_product(Automate automate){
-        automate.status = Status.payment;
-        int temp = (int)(Math.random()*5);
+        int temp = (int)(Math.random()*5+1);
         try {
             TimeUnit.SECONDS.sleep(temp);
         } catch (InterruptedException e) {
