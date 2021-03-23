@@ -11,23 +11,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 public class Automate {
+    //TODO функцию, которая спрашивает о том, какой студент к автомату подошел
+    private String name;
+    public Status status = Status.idle_time;
+    private List<Student> queue;
 
-    public String idleTime(){
-        return "idle time";
-    }
-    public String reception(){
-        return "reception";
-    }
-    public String payment(){
-        return "payment";
-    }
-    public String issue(){
-        return "issue";
+    public void issue(){
+        status = Status.DELIVERY;
+        int temp=(int)(Math.random()*3+1);
+        try {
+            TimeUnit.SECONDS.sleep(temp);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        status = Status.idle_time;
     }
 
-    Map<IProduct, Integer> products= new TreeMap<>();
+    private final Map<IProduct, Integer> products= new TreeMap<>();
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void getProduct(List<IDelivery> deliveries){
         for (IDelivery current : deliveries){
@@ -48,6 +51,10 @@ public class Automate {
         }
     }
 
+    public Map<IProduct, Integer> inStock(){
+        return products;
+    }
+
     @Override
     public String toString() {
         String out = "";
@@ -60,4 +67,24 @@ public class Automate {
 
         return out;
     }
+
+    public List<Student> getQueue() {
+        return queue;
+    }
+    public void setQueue(List<Student> queue){
+        this.queue = queue;
+    }
+    public void setName(String name){
+        this.name=name;
+    }
+    public String getName(){
+        return this.name;
+    }
+}
+
+enum Status{
+    idle_time,
+    reception,
+    payment,
+    DELIVERY;
 }
