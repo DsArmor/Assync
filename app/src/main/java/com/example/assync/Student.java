@@ -4,12 +4,19 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.assync.delivery.DeliveryCocaCola;
+import com.example.assync.delivery.DeliveryPepsi;
+import com.example.assync.delivery.DeliveryPopcorn;
+import com.example.assync.delivery.DeliveryShawarma;
+import com.example.assync.interfaces.IDelivery;
 import com.example.assync.interfaces.IProduct;
 import com.example.assync.product.CocaCola;
 import com.example.assync.product.Pepsi;
 import com.example.assync.product.Popcorn;
 import com.example.assync.product.Shawarma;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +42,34 @@ public class Student {
         while (!(flag1 && flag2) && i<1000){
             int temp1 = (int)(Math.random()*2);
             int temp2 = (int)(Math.random()*2);
+            if (i>0){
+                if (flag1){
+                    List<IDelivery> temp = new ArrayList<>();
+                    switch (temp1){
+                        case 0:
+                            temp.add(new DeliveryCocaCola());
+                            automate.getProduct(temp);
+                            break;
+                        case 1:
+                            temp.add(new DeliveryPepsi());
+                            automate.getProduct(temp);
+                            break;
+                    }
+                }
+                if (flag2){
+                    List<IDelivery> temp = new ArrayList<>();
+                    switch (temp2){
+                        case 0:
+                            temp.add(new DeliveryPopcorn());
+                            automate.getProduct(temp);
+                            break;
+                        case 1:
+                            temp.add(new DeliveryShawarma());
+                            automate.getProduct(temp);
+                            break;
+                    }
+                }
+            }
             switch (temp1){
                 case 0:
                     flag1 = automate.BuyProduct(new CocaCola());
@@ -49,6 +84,7 @@ public class Student {
                     break;
                 case 1:
                     flag2 = automate.BuyProduct(new Shawarma());
+                    break;
             }
             i++;
         }
@@ -71,8 +107,4 @@ public class Student {
             e.printStackTrace();
         }
     }
-    //TODO поле для запоминания студентом своего автомата
-    //TODO возможность студента слипать свои дейсвтия
-    //TODO рандомный выбор студентишкой товара из списка
-    //надо учесть тот факт, что студент купит что-то, только если в автомате есть и напиток, и еда, в противном случае, он уйдет
 }

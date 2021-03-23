@@ -24,7 +24,7 @@ public class Courier {
         }
         return instance;
     }
-    //TODO сделай так, чтобы курьер принимал автомат, тип продукта и накладывал в него товары соответсвующие имени
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void putProduct(String product, Automate automate, int count){
         List<IDelivery> deliveries = new ArrayList<>();

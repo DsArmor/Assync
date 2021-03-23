@@ -217,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Automate... automates) {
             for (Student student : automates[0].getQueue()){
                 automates[0].current_student=student.getNumber();
+                automates[0].status= com.example.assync.Status.Reception;
                 publishProgress(automates[0]);
                 int temp = (int)(Math.random()*3+1);
                 try {
@@ -224,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                automates[0].status= com.example.assync.Status.Reception;
                 publishProgress(automates[0]);
                 boolean flag = student.choose_product(automates[0]);
                 if (flag){
