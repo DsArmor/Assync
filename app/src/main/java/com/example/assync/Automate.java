@@ -13,21 +13,21 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-public class Automate {
-    //TODO функцию, которая спрашивает о том, какой студент к автомату подошел
+public class Automate{
     private String name;
-    public Status status = Status.idle_time;
+    private int earnings=0;
+    public Status status = Status.Idle_time;
     private List<Student> queue;
+    public int current_student;
 
     public void issue(){
-        status = Status.DELIVERY;
         int temp=(int)(Math.random()*3+1);
         try {
             TimeUnit.SECONDS.sleep(temp);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        status = Status.idle_time;
+        status = Status.Idle_time;
     }
 
     private final Map<IProduct, Integer> products= new TreeMap<>();
@@ -44,15 +44,12 @@ public class Automate {
     boolean BuyProduct(IProduct product) {
         int count = products.getOrDefault(product, 0);
         if (count > 0) {
+            earnings+=product.cost();
             products.put(product, count - 1);
             return true;
         } else {
             return false;
         }
-    }
-
-    public Map<IProduct, Integer> inStock(){
-        return products;
     }
 
     @Override
@@ -67,6 +64,9 @@ public class Automate {
 
         return out;
     }
+    public Map<IProduct, Integer> inStock(){
+        return products;
+    }
 
     public List<Student> getQueue() {
         return queue;
@@ -80,11 +80,15 @@ public class Automate {
     public String getName(){
         return this.name;
     }
+    public int getEarnings(){
+        return this.earnings;
+    }
+}
+enum Status{
+    Idle_time,
+    Reception,
+    Payment,
+    Delivery;
 }
 
-enum Status{
-    idle_time,
-    reception,
-    payment,
-    DELIVERY;
-}
+

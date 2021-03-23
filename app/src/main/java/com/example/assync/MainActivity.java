@@ -23,38 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    //Автомат со снеками, в нем есть разные варианты снеков\
-    //Пополнение снеков через автомат
-    //
-    //Есть покупатель и 4 автомата, есть админ(следит), у него есть планшет, в котором выводится информация по 4 автоматам
-    //20 студентов идут пожрать
-    //рандомное распределение
-    //Разбитый экран на 4 части, в каждом блоке пишется название автомата
-    //TODO:
-    //статус атомата(простаивание, прием, оплата, выдача)
-    //номер студента
-    //(у всех одинаковый перечень товаров, но разные остатки)
-    //внизу показываем перечень всех товаров, которые может купить чел
-    //TODO: recyclerView(view holder, adapter) для товаров
-    //левый нижний - блок очереди, правый нижний - сумма заказа
-    //Todo:(что должно быть)
-    //Фабрики
-    //Одиночка
-    //Все 4 автомата работают одновременно
-    //если вызовете экзикьют, то будет хуйня
-    //execute assync task together
-    //кто у вас стек: жэ
-
-
-
-    //рандомно сформировать очереди к автоматам
-    //Класс студентов
-    //Фабрику еды
-    //Фабрику напитков
-    //Класс автомата с конструктором рандомного заполнения товарами
-    //Поток из автоматов
-    //одновременная обработка 4 автоматов
-    //каждый студент своим действием слипает автомат
     TextView machine1;
     TextView status1;
     TextView sum1;
@@ -74,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     TextView students3;
 
     TextView machine4;
-
     TextView status4;
     TextView sum4;
     TextView products4;
@@ -100,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
     List<Student> queue3 = new ArrayList<>();
     List<Student> queue4 = new ArrayList<>();
 
-
-
     void putStudents(Student[] students){
         int i=1;
         for (Student student: students){
@@ -122,10 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 case 3:
                     queue3.add(student);
             }
-            //todo рандомно присвоить всем студентам номера
-            //todo по этим номерам формировать 4 очереди к автоматам
-            //запустить студнетов к автоматам, но это легкая реализация, когда автомату будет заранее известно, че там ждать
-            //остановлюсь на этом, другая идея погорела на этапе написания этого коммента
         }
         automate1.setQueue(queue1);
         automate2.setQueue(queue2);
@@ -233,48 +194,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
                 StreamAutomate streamAutomate1 = new StreamAutomate();
+                StreamAutomate streamAutomate2 = new StreamAutomate();
+                StreamAutomate streamAutomate3 = new StreamAutomate();
+                StreamAutomate streamAutomate4 = new StreamAutomate();
+
                 streamAutomate1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate1);
-//
-//                for (Student student : queue1){
-//                    status1.setText(automate1.idleTime());
-//                    System.out.println(student.getNumber());
-//                    System.out.println(automate1.idleTime());
-//                    int temp = (int)(Math.random()*3+1);
-//                    try {
-//                        TimeUnit.SECONDS.sleep(2);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    boolean flag = student.choose_product(automate1);
-//                    System.out.println(flag);
-//                    if (flag){
-//                        student.buy_product();
-//                        products1.setText(automate1.toString());
-//                        status1.setText("ISSUE");
-//                        automate1.issue();
-//                    }
-//
-//                }
+                streamAutomate2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate2);
+                streamAutomate3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate3);
+                streamAutomate4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate4);
             }
         });
     }
-//    @SuppressLint("SetTextI18n")
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-//    public void doIt(Automate automate){
-//        for (Student student : automate.getQueue()){
-//            int temp = (int)(Math.random()*3+1);
-//            try {
-//                TimeUnit.SECONDS.sleep(temp);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            boolean flag = student.choose_product(automate);
-//            if (flag){
-//                student.buy_product();
-//                automate.issue();
-//            }
-//        }
-//    }
 
     @SuppressLint("StaticFieldLeak")
     class StreamAutomate extends AsyncTask<Automate, Automate, Void> {
@@ -285,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         protected Void doInBackground(Automate... automates) {
-
             for (Student student : automates[0].getQueue()){
+                automates[0].current_student=student.getNumber();
                 publishProgress(automates[0]);
                 int temp = (int)(Math.random()*3+1);
                 try {
@@ -294,13 +224,24 @@ public class MainActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                automates[0].status= com.example.assync.Status.Reception;
+                publishProgress(automates[0]);
                 boolean flag = student.choose_product(automates[0]);
-                publishProgress();
                 if (flag){
+                    automates[0].status = com.example.assync.Status.Payment;
+                    publishProgress(automates[0]);
                     student.buy_product(automates[0]);
+
+                    automates[0].status = com.example.assync.Status.Delivery;
                     publishProgress(automates[0]);
                     automates[0].issue();
+                    automates[0].current_student=0;
+
                 }
+                publishProgress(automates[0]);
+                automates[0].issue();
+                automates[0].current_student=0;
+                publishProgress(automates[0]);
             }
             return null;
         }
@@ -311,22 +252,37 @@ public class MainActivity extends AppCompatActivity {
                 case "1":
                     status1.setText(automates[0].status.toString());
                     products1.setText(automates[0].toString());
+                    students1.setText(String.valueOf(automates[0].current_student));
+                    if (status1.getText().equals("Payment")){
+                        sum1.setText(String.valueOf(automates[0].getEarnings()));
+                    }
                     break;
                 case "2":
                     status2.setText(automates[0].status.toString());
                     products2.setText(automates[0].toString());
+                    students2.setText(String.valueOf(automates[0].current_student));
+                    if (status2.getText().equals("Payment")){
+                        sum2.setText(String.valueOf(automates[0].getEarnings()));
+                    }
                     break;
                 case "3":
                     status3.setText(automates[0].status.toString());
                     products3.setText(automates[0].toString());
+                    students3.setText(String.valueOf(automates[0].current_student));
+                    if (status3.getText().equals("Payment")){
+                        sum3.setText(String.valueOf(automates[0].getEarnings()));
+                    }
                     break;
                 case "4":
                     status4.setText(automates[0].status.toString());
                     products4.setText(automates[0].toString());
+                    students4.setText(String.valueOf(automates[0].current_student));
+                    if (status4.getText().equals("Payment")){
+                        sum4.setText(String.valueOf(automates[0].getEarnings()));
+                    }
+                    break;
             }
-
         }
-
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
