@@ -31,7 +31,6 @@ public class Automate{
     }
 
     private final Map<IProduct, Integer> products= new TreeMap<>();
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void getProduct(List<IDelivery> deliveries){
         for (IDelivery current : deliveries){
             IProduct product = current.Delivery();
@@ -40,7 +39,6 @@ public class Automate{
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     boolean BuyProduct(IProduct product) {
         int count = products.getOrDefault(product, 0);
         if (count > 0) {
