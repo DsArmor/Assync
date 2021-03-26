@@ -192,6 +192,11 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
+                status1.setText(automate1.status.toString());
+                status2.setText(automate2.status.toString());
+                status3.setText(automate3.status.toString());
+                status4.setText(automate4.status.toString());
+
                 progressBar.setVisibility(View.VISIBLE);
                 StreamAutomate streamAutomate1 = new StreamAutomate();
                 StreamAutomate streamAutomate2 = new StreamAutomate();
@@ -225,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                publishProgress(automates[0]);
                 boolean flag = student.choose_product(automates[0]);
                 if (flag){
                     automates[0].status = com.example.assync.Status.Payment;
@@ -251,34 +255,37 @@ public class MainActivity extends AppCompatActivity {
             switch (automates[0].getName()){
                 case "1":
                     status1.setText(automates[0].status.toString());
-                    products1.setText(automates[0].toString());
                     students1.setText(String.valueOf(automates[0].current_student));
                     if (status1.getText().equals("Payment")){
                         sum1.setText(String.valueOf(automates[0].getEarnings()));
+                        products1.setText(automates[0].toString());
+
                     }
                     break;
                 case "2":
                     status2.setText(automates[0].status.toString());
-                    products2.setText(automates[0].toString());
+
                     students2.setText(String.valueOf(automates[0].current_student));
                     if (status2.getText().equals("Payment")){
                         sum2.setText(String.valueOf(automates[0].getEarnings()));
+                        products2.setText(automates[0].toString());
                     }
                     break;
                 case "3":
                     status3.setText(automates[0].status.toString());
-                    products3.setText(automates[0].toString());
+
                     students3.setText(String.valueOf(automates[0].current_student));
                     if (status3.getText().equals("Payment")){
                         sum3.setText(String.valueOf(automates[0].getEarnings()));
+                        products3.setText(automates[0].toString());
                     }
                     break;
                 case "4":
                     status4.setText(automates[0].status.toString());
-                    products4.setText(automates[0].toString());
                     students4.setText(String.valueOf(automates[0].current_student));
                     if (status4.getText().equals("Payment")){
                         sum4.setText(String.valueOf(automates[0].getEarnings()));
+                        products4.setText(automates[0].toString());
                     }
                     break;
             }

@@ -396,8 +396,8 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="14dp"
-        android:layout_height="167dp"
+        android:layout_width="13dp"
+        android:layout_height="249dp"
         android:layout_marginStart="188dp"
         android:layout_marginLeft="188dp"
         android:background="#AC2929"
