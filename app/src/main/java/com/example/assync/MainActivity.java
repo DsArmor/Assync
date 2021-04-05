@@ -7,6 +7,8 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+
+    Handler handler;
 
     TextView machine1;
     TextView status1;
@@ -196,104 +200,207 @@ public class MainActivity extends AppCompatActivity {
                 status2.setText(automate2.status.toString());
                 status3.setText(automate3.status.toString());
                 status4.setText(automate4.status.toString());
-
                 progressBar.setVisibility(View.VISIBLE);
-                StreamAutomate streamAutomate1 = new StreamAutomate();
-                StreamAutomate streamAutomate2 = new StreamAutomate();
-                StreamAutomate streamAutomate3 = new StreamAutomate();
-                StreamAutomate streamAutomate4 = new StreamAutomate();
 
-                streamAutomate1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate1);
-                streamAutomate2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate2);
-                streamAutomate3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate3);
-                streamAutomate4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate4);
+                handler = new Handler(){
+                    @SuppressLint("HandlerLeak")
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        switch (msg.what) {
+                            case 1:
+                                status1.setText(automate1.status.toString());
+                                students1.setText(String.valueOf(automate1.current_student));
+                                if (status1.getText().equals("Payment")) {
+                                    sum1.setText(String.valueOf(automate1.getEarnings()));
+                                    products1.setText(automate1.toString());
+
+                                }
+                                break;
+                            case 2:
+                                status2.setText(automate2.status.toString());
+
+                                students2.setText(String.valueOf(automate2.current_student));
+                                if (status2.getText().equals("Payment")) {
+                                    sum2.setText(String.valueOf(automate2.getEarnings()));
+                                    products2.setText(automate2.toString());
+                                }
+                                break;
+                            case 3:
+                                status3.setText(automate3.status.toString());
+
+                                students3.setText(String.valueOf(automate3.current_student));
+                                if (status3.getText().equals("Payment")) {
+                                    sum3.setText(String.valueOf(automate3.getEarnings()));
+                                    products3.setText(automate3.toString());
+                                }
+                                break;
+                            case 4:
+                                status4.setText(automate4.status.toString());
+                                students4.setText(String.valueOf(automate4.current_student));
+                                if (status4.getText().equals("Payment")) {
+                                    sum4.setText(String.valueOf(automate4.getEarnings()));
+                                    products4.setText(automate4.toString());
+                                }
+                                break;
+                        }
+                    }
+                };
+
+                Thread thread1=new Thread(new AnotherRunnable(automate1));
+                Thread thread2=new Thread(new AnotherRunnable(automate2));
+                Thread thread3=new Thread(new AnotherRunnable(automate3));
+                Thread thread4=new Thread(new AnotherRunnable(automate4));
+
+                thread1.start();
+                thread2.start();
+                thread3.start();
+                thread4.start();
+
+//                StreamAutomate streamAutomate1 = new StreamAutomate();
+//                StreamAutomate streamAutomate2 = new StreamAutomate();
+//                StreamAutomate streamAutomate3 = new StreamAutomate();
+//                StreamAutomate streamAutomate4 = new StreamAutomate();
+//
+//                streamAutomate1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate1);
+//                streamAutomate2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate2);
+//                streamAutomate3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate3);
+//                streamAutomate4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, automate4);
             }
         });
     }
 
-    @SuppressLint("StaticFieldLeak")
-    class StreamAutomate extends AsyncTask<Automate, Automate, Void> {
+    class AnotherRunnable implements Runnable{
+        Automate automate;
 
-        @Override
-        protected void onPreExecute() { super.onPreExecute(); }
+        public int Choose(Automate automate){
+            String type = automate.getName();
+            return Integer.parseInt(type);
+        }
 
-        @RequiresApi(api = Build.VERSION_CODES.N)
+        public AnotherRunnable(Automate automate){
+            this.automate = automate;
+        }
         @Override
-        protected Void doInBackground(Automate... automates) {
-            for (Student student : automates[0].getQueue()){
-                automates[0].current_student=student.getNumber();
-                automates[0].status= com.example.assync.Status.Reception;
-                publishProgress(automates[0]);
+        public void run() {
+            int i = Choose(automate);
+            for (Student student : automate.getQueue()){
+                automate.current_student=student.getNumber();
+                automate.status= Status.Reception;
+                handler.sendEmptyMessage(i);
+                //здесь что-то нужно вернуть в основной поток
                 int temp = (int)(Math.random()*3+1);
                 try {
                     TimeUnit.SECONDS.sleep(temp);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                boolean flag = student.choose_product(automates[0]);
+                boolean flag = student.choose_product(automate);
                 if (flag){
-                    automates[0].status = com.example.assync.Status.Payment;
-                    publishProgress(automates[0]);
-                    student.buy_product(automates[0]);
+                    automate.status = Status.Payment;
+                    handler.sendEmptyMessage(i);
+                    //здесь что-то нужно вернуть в основной поток
+                    student.buy_product(automate);
 
-                    automates[0].status = com.example.assync.Status.Delivery;
-                    publishProgress(automates[0]);
-                    automates[0].issue();
-                    automates[0].current_student=0;
+                    automate.status = Status.Delivery;
+                    handler.sendEmptyMessage(i);
+                    //здесь что-то нужно вернуть в основной поток
+                    automate.issue();
+                    automate.current_student=0;
 
                 }
-                publishProgress(automates[0]);
-                automates[0].issue();
-                automates[0].current_student=0;
-                publishProgress(automates[0]);
-            }
-            return null;
-        }
-        @Override
-        protected void onProgressUpdate(Automate... automates) {
-            super.onProgressUpdate(automates);
-            switch (automates[0].getName()){
-                case "1":
-                    status1.setText(automates[0].status.toString());
-                    students1.setText(String.valueOf(automates[0].current_student));
-                    if (status1.getText().equals("Payment")){
-                        sum1.setText(String.valueOf(automates[0].getEarnings()));
-                        products1.setText(automates[0].toString());
-
-                    }
-                    break;
-                case "2":
-                    status2.setText(automates[0].status.toString());
-
-                    students2.setText(String.valueOf(automates[0].current_student));
-                    if (status2.getText().equals("Payment")){
-                        sum2.setText(String.valueOf(automates[0].getEarnings()));
-                        products2.setText(automates[0].toString());
-                    }
-                    break;
-                case "3":
-                    status3.setText(automates[0].status.toString());
-
-                    students3.setText(String.valueOf(automates[0].current_student));
-                    if (status3.getText().equals("Payment")){
-                        sum3.setText(String.valueOf(automates[0].getEarnings()));
-                        products3.setText(automates[0].toString());
-                    }
-                    break;
-                case "4":
-                    status4.setText(automates[0].status.toString());
-                    students4.setText(String.valueOf(automates[0].current_student));
-                    if (status4.getText().equals("Payment")){
-                        sum4.setText(String.valueOf(automates[0].getEarnings()));
-                        products4.setText(automates[0].toString());
-                    }
-                    break;
+                handler.sendEmptyMessage(i);
+                //здесь что-то нужно вернуть в основной поток
+                automate.issue();
+                automate.current_student=0;
+                handler.sendEmptyMessage(i);
+                //здесь что-то нужно вернуть в основной поток
             }
         }
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-        }
-
     }
+//    @SuppressLint("StaticFieldLeak")
+//    class StreamAutomate extends AsyncTask<Automate, Automate, Void> {
+//
+//        @Override
+//        protected void onPreExecute() { super.onPreExecute(); }
+//
+//        @RequiresApi(api = Build.VERSION_CODES.N)
+//        @Override
+//        protected Void doInBackground(Automate... automates) {
+//            for (Student student : automates[0].getQueue()){
+//                automates[0].current_student=student.getNumber();
+//                automates[0].status= com.example.assync.Status.Reception;
+//                publishProgress(automates[0]);
+//                int temp = (int)(Math.random()*3+1);
+//                try {
+//                    TimeUnit.SECONDS.sleep(temp);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                boolean flag = student.choose_product(automates[0]);
+//                if (flag){
+//                    automates[0].status = com.example.assync.Status.Payment;
+//                    publishProgress(automates[0]);
+//                    student.buy_product(automates[0]);
+//
+//                    automates[0].status = com.example.assync.Status.Delivery;
+//                    publishProgress(automates[0]);
+//                    automates[0].issue();
+//                    automates[0].current_student=0;
+//
+//                }
+//                publishProgress(automates[0]);
+//                automates[0].issue();
+//                automates[0].current_student=0;
+//                publishProgress(automates[0]);
+//            }
+//            return null;
+//        }
+//        @Override
+//        protected void onProgressUpdate(Automate... automates) {
+//            super.onProgressUpdate(automates);
+//            switch (automates[0].getName()){
+//                case "1":
+//                    status1.setText(automates[0].status.toString());
+//                    students1.setText(String.valueOf(automates[0].current_student));
+//                    if (status1.getText().equals("Payment")){
+//                        sum1.setText(String.valueOf(automates[0].getEarnings()));
+//                        products1.setText(automates[0].toString());
+//
+//                    }
+//                    break;
+//                case "2":
+//                    status2.setText(automates[0].status.toString());
+//
+//                    students2.setText(String.valueOf(automates[0].current_student));
+//                    if (status2.getText().equals("Payment")){
+//                        sum2.setText(String.valueOf(automates[0].getEarnings()));
+//                        products2.setText(automates[0].toString());
+//                    }
+//                    break;
+//                case "3":
+//                    status3.setText(automates[0].status.toString());
+//
+//                    students3.setText(String.valueOf(automates[0].current_student));
+//                    if (status3.getText().equals("Payment")){
+//                        sum3.setText(String.valueOf(automates[0].getEarnings()));
+//                        products3.setText(automates[0].toString());
+//                    }
+//                    break;
+//                case "4":
+//                    status4.setText(automates[0].status.toString());
+//                    students4.setText(String.valueOf(automates[0].current_student));
+//                    if (status4.getText().equals("Payment")){
+//                        sum4.setText(String.valueOf(automates[0].getEarnings()));
+//                        products4.setText(automates[0].toString());
+//                    }
+//                    break;
+//            }
+//        }
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            super.onPostExecute(result);
+//        }
+//
+//    }
 }

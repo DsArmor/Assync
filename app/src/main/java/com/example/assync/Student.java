@@ -34,11 +34,11 @@ public class Student {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean choose_product(Automate automate){
-        Map<IProduct, Integer> products = automate.inStock();
 
         boolean flag1 = false;
         boolean flag2 = false;
         int i=0;
+
         while (!(flag1 && flag2) && i<1000){
             int temp1 = (int)(Math.random()*2);
             int temp2 = (int)(Math.random()*2);
@@ -49,10 +49,12 @@ public class Student {
                         case 0:
                             temp.add(new DeliveryCocaCola());
                             automate.getProduct(temp);
+                            automate.setEarnings(new CocaCola().cost());
                             break;
                         case 1:
                             temp.add(new DeliveryPepsi());
                             automate.getProduct(temp);
+                            automate.setEarnings(new Pepsi().cost());
                             break;
                     }
                 }
@@ -62,10 +64,12 @@ public class Student {
                         case 0:
                             temp.add(new DeliveryPopcorn());
                             automate.getProduct(temp);
+                            automate.setEarnings(new Popcorn().cost());
                             break;
                         case 1:
                             temp.add(new DeliveryShawarma());
                             automate.getProduct(temp);
+                            automate.setEarnings(new Shawarma().cost());
                             break;
                     }
                 }
@@ -95,7 +99,6 @@ public class Student {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(i);
         return (i < 1000);
 
     }

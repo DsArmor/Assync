@@ -78,6 +78,9 @@ public class Automate{
     public String getName(){
         return this.name;
     }
+    public void setEarnings(int cost){
+        this.earnings-=cost;
+    }
     public int getEarnings(){
         return this.earnings;
     }
