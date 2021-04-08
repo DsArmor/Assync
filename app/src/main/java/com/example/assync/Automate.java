@@ -1,8 +1,9 @@
 package com.example.assync;
 
-import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 
 import com.example.assync.interfaces.IDelivery;
 import com.example.assync.interfaces.IProduct;
@@ -14,11 +15,33 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 public class Automate{
+
     private String name;
     private int earnings=0;
     public Status status = Status.Idle_time;
     private List<Student> queue;
     public int current_student;
+    public VendingMachineFragment fragment;
+    public Thread thread;
+
+    public Automate(){
+        thread = new Thread(new AnotherRunnable(this, handler));
+    }
+
+    public Handler handler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+//            updateView();
+        }
+    };
+
+    public void updateView() {
+        if (fragment != null)
+            fragment.updateView();
+//        if (bigFragment != null)
+//            bigFragment.updateView();
+    }
 
     public void issue(){
         int temp=(int)(Math.random()*3+1);
