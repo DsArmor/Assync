@@ -85,10 +85,9 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="13dp"
-        android:layout_height="249dp"
+        android:layout_width="9dp"
+        android:layout_height="164dp"
         android:layout_marginStart="188dp"
-        android:layout_marginLeft="188dp"
         android:background="#AC2929"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -104,14 +103,14 @@
 
     <LinearLayout
         android:layout_width="430dp"
-        android:layout_height="602dp"
+        android:layout_height="525dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="304dp"
+            android:layout_height="259dp"
             android:orientation="horizontal">
 
             <FrameLayout
@@ -149,4 +148,22 @@
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="482dp"
+        android:layout_height="8dp"
+        android:background="#AC2929"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/fullscreen"
+        android:layout_width="425dp"
+        android:layout_height="525dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

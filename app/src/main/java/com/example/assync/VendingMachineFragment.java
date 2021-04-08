@@ -15,12 +15,16 @@ public class VendingMachineFragment extends Fragment {
     TextView sum1;
     TextView products1;
     TextView students1;
+    Automate automate;
+
+    Automate current_automate;
+    VendingMachineFragment fragment = this;
 
     public VendingMachineFragment() {
         // Required empty public constructor
     }
 
-    public static VendingMachineFragment newInstance() {
+    public static VendingMachineFragment newInstance(){
         VendingMachineFragment fragment = new VendingMachineFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -36,11 +40,7 @@ public class VendingMachineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.vending_machine1, container, false);
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.height = 120;
-        view.setLayoutParams(params);
         machine1 = view.findViewById(R.id.machine1);
-        machine1.setText("First automate");
         status1 = view.findViewById(R.id.status1);
         sum1 = view.findViewById(R.id.sum1);
         products1 = view.findViewById(R.id.products1);
@@ -48,7 +48,15 @@ public class VendingMachineFragment extends Fragment {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ((MainActivity)getActivity()).Full(fragment);
+                ViewGroup.LayoutParams params = view.getLayoutParams();
+                if (params.height == 120) {
+                    params.height = 700;
+                }
+                else {
+                    params.height = 120;
+                }
+                view.setLayoutParams(params);
             }
         });
         return view;

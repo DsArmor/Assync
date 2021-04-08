@@ -2,6 +2,7 @@ package com.example.assync;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -70,7 +72,6 @@ public class MainActivity extends FragmentActivity {
                     break;
                 case 2:
                     fragment2.status1.setText(automate2.status.toString());
-
                     fragment2.students1.setText(String.valueOf(automate2.current_student));
                     if (fragment2.status1.getText().equals("Payment")) {
                         fragment2.sum1.setText(String.valueOf(automate2.getEarnings()));
@@ -153,6 +154,11 @@ public class MainActivity extends FragmentActivity {
         transaction.add(R.id.frame4, fragment4);
         transaction.commit();
 
+        fragment1.automate=automate1;
+        fragment2.automate=automate2;
+        fragment3.automate=automate3;
+        fragment4.automate=automate4;
+
         Courier courier = Courier.getInstance();
 
         count_of_products = findViewById(R.id.count_of_products);
@@ -178,6 +184,7 @@ public class MainActivity extends FragmentActivity {
         automate3.setName("3");
         automate4.setName("4");
 
+
         //Загрузка продуктов в автомат
         add.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -185,17 +192,15 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 String selected_product= spinner_of_products.getSelectedItem().toString();
                 String selected_automate = spinner_of_automates.getSelectedItem().toString();
-
-                System.out.println(count_of_products.getText().toString());
-                System.out.println(selected_product);
-                System.out.println(selected_automate);
-
                 courier.putProduct(selected_product, current_automate(selected_automate), Integer.parseInt(count_of_products.getText().toString()));
                 fragment1.products1.setText(automate1.toString());
-                fragment2.products1.setText(automate1.toString());
-                fragment3.products1.setText(automate1.toString());
-                fragment4.products1.setText(automate1.toString());
-
+                fragment2.products1.setText(automate2.toString());
+                fragment3.products1.setText(automate3.toString());
+                fragment4.products1.setText(automate4.toString());
+                fragment1.machine1.setText(automate1.getName());
+                fragment2.machine1.setText(automate2.getName());
+                fragment3.machine1.setText(automate3.getName());
+                fragment4.machine1.setText(automate4.getName());
             }
         });
         putStudents(students);
@@ -223,6 +228,19 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
+    public void Full(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.fullscreen, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public int Choose(Automate automate){
+        String type = automate.getName();
+        return Integer.parseInt(type);
+    }
+
     class AnotherRunnable implements Runnable{
         private Automate automate;
         private Handler handler;
@@ -231,11 +249,6 @@ public class MainActivity extends FragmentActivity {
         public AnotherRunnable(Automate vendingMachine, Handler handler) {
             this.automate = vendingMachine;
             this.handler = handler;
-        }
-
-        public int Choose(Automate automate){
-            String type = automate.getName();
-            return Integer.parseInt(type);
         }
 
         @Override
@@ -267,11 +280,9 @@ public class MainActivity extends FragmentActivity {
 
                 }
                 handler.sendEmptyMessage(i);
-
                 automate.issue();
                 automate.current_student=0;
                 handler.sendEmptyMessage(i);
-
             }
         }
     }
