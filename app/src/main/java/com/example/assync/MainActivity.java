@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,32 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends FragmentActivity {
 
-    Handler handler;
-
-    TextView machine1;
-    TextView status1;
-    TextView sum1;
-    TextView products1;
-    TextView students1;
-
-    TextView machine2;
-    TextView status2;
-    TextView sum2;
-    TextView products2;
-    TextView students2;
-
-    TextView machine3;
-    TextView status3;
-    TextView sum3;
-    TextView products3;
-    TextView students3;
-
-    TextView machine4;
-    TextView status4;
-    TextView sum4;
-    TextView products4;
-    TextView students4;
-
     EditText count_of_products;
     ProgressBar progressBar;
 
@@ -71,6 +48,54 @@ public class MainActivity extends FragmentActivity {
     List<Student> queue2 = new ArrayList<>();
     List<Student> queue3 = new ArrayList<>();
     List<Student> queue4 = new ArrayList<>();
+
+    VendingMachineFragment fragment1 = VendingMachineFragment.newInstance();
+    VendingMachineFragment fragment2 = VendingMachineFragment.newInstance();
+    VendingMachineFragment fragment3 = VendingMachineFragment.newInstance();
+    VendingMachineFragment fragment4 = VendingMachineFragment.newInstance();
+
+    Handler handler = new Handler(){
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    fragment1.status1.setText(automate1.status.toString());
+                    fragment1.students1.setText(String.valueOf(automate1.current_student));
+                    if (fragment1.status1.getText().equals("Payment")) {
+                        fragment1.sum1.setText(String.valueOf(automate1.getEarnings()));
+                        fragment1.products1.setText(automate1.toString());
+                    }
+                    break;
+                case 2:
+                    fragment2.status1.setText(automate2.status.toString());
+
+                    fragment2.students1.setText(String.valueOf(automate2.current_student));
+                    if (fragment2.status1.getText().equals("Payment")) {
+                        fragment2.sum1.setText(String.valueOf(automate2.getEarnings()));
+                        fragment2.products1.setText(automate2.toString());
+                    }
+                    break;
+                case 3:
+                    fragment3.status1.setText(automate3.status.toString());
+                    fragment3.students1.setText(String.valueOf(automate3.current_student));
+                    if (fragment3.status1.getText().equals("Payment")) {
+                        fragment3.sum1.setText(String.valueOf(automate3.getEarnings()));
+                        fragment3.products1.setText(automate3.toString());
+                    }
+                    break;
+                case 4:
+                    fragment4.status1.setText(automate4.status.toString());
+                    fragment4.students1.setText(String.valueOf(automate4.current_student));
+                    if (fragment4.status1.getText().equals("Payment")) {
+                        fragment4.sum1.setText(String.valueOf(automate4.getEarnings()));
+                        fragment4.products1.setText(automate4.toString());
+                    }
+                    break;
+            }
+        }
+    };
 
     void putStudents(Student[] students){
         int i=1;
@@ -119,39 +144,16 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //поиграемся с фрагментами
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
 
+        transaction.add(R.id.frame1, fragment1);
+        transaction.add(R.id.frame2, fragment2);
+        transaction.add(R.id.frame3, fragment3);
+        transaction.add(R.id.frame4, fragment4);
+        transaction.commit();
 
         Courier courier = Courier.getInstance();
-
-        //инициализация всего xml
-        machine1 = (TextView)findViewById(R.id.machine1);
-        machine1.setText("First automate");
-        status1 = (TextView)findViewById(R.id.status1);
-        sum1 = (TextView)findViewById(R.id.sum1);
-        products1 = (TextView)findViewById(R.id.products1);
-        students1 = (TextView)findViewById(R.id.students1);
-
-        machine2 = (TextView)findViewById(R.id.machine2);
-        machine2.setText("Second automate");
-        status2 = (TextView)findViewById(R.id.status2);
-        sum2 = (TextView)findViewById(R.id.sum2);
-        products2 = (TextView)findViewById(R.id.products2);
-        students2 = (TextView)findViewById(R.id.students2);
-
-        machine3 = (TextView)findViewById(R.id.machine3);
-        machine3.setText("Third automate");
-        status3 = (TextView)findViewById(R.id.status3);
-        sum3 = (TextView)findViewById(R.id.sum3);
-        products3 = (TextView)findViewById(R.id.products3);
-        students3 = (TextView)findViewById(R.id.students3);
-
-        machine4 = (TextView)findViewById(R.id.machine4);
-        machine4.setText("Fourth automate");
-        status4 = (TextView)findViewById(R.id.status4);
-        sum4 = (TextView)findViewById(R.id.sum4);
-        products4 = (TextView)findViewById(R.id.products4);
-        students4 = (TextView)findViewById(R.id.students4);
 
         count_of_products = findViewById(R.id.count_of_products);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
@@ -189,10 +191,11 @@ public class MainActivity extends FragmentActivity {
                 System.out.println(selected_automate);
 
                 courier.putProduct(selected_product, current_automate(selected_automate), Integer.parseInt(count_of_products.getText().toString()));
-                products1.setText(automate1.toString());
-                products2.setText(automate2.toString());
-                products3.setText(automate3.toString());
-                products4.setText(automate4.toString());
+                fragment1.products1.setText(automate1.toString());
+                fragment2.products1.setText(automate1.toString());
+                fragment3.products1.setText(automate1.toString());
+                fragment4.products1.setText(automate1.toString());
+
             }
         });
         putStudents(students);
@@ -200,61 +203,17 @@ public class MainActivity extends FragmentActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
-                status1.setText(automate1.status.toString());
-                status2.setText(automate2.status.toString());
-                status3.setText(automate3.status.toString());
-                status4.setText(automate4.status.toString());
+                fragment1.status1.setText(automate1.status.toString());
+                fragment2.status1.setText(automate1.status.toString());
+                fragment3.status1.setText(automate1.status.toString());
+                fragment4.status1.setText(automate1.status.toString());
+
                 progressBar.setVisibility(View.VISIBLE);
 
-                handler = new Handler(){
-                    @SuppressLint("HandlerLeak")
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        switch (msg.what) {
-                            case 1:
-                                status1.setText(automate1.status.toString());
-                                students1.setText(String.valueOf(automate1.current_student));
-                                if (status1.getText().equals("Payment")) {
-                                    sum1.setText(String.valueOf(automate1.getEarnings()));
-                                    products1.setText(automate1.toString());
-
-                                }
-                                break;
-                            case 2:
-                                status2.setText(automate2.status.toString());
-
-                                students2.setText(String.valueOf(automate2.current_student));
-                                if (status2.getText().equals("Payment")) {
-                                    sum2.setText(String.valueOf(automate2.getEarnings()));
-                                    products2.setText(automate2.toString());
-                                }
-                                break;
-                            case 3:
-                                status3.setText(automate3.status.toString());
-
-                                students3.setText(String.valueOf(automate3.current_student));
-                                if (status3.getText().equals("Payment")) {
-                                    sum3.setText(String.valueOf(automate3.getEarnings()));
-                                    products3.setText(automate3.toString());
-                                }
-                                break;
-                            case 4:
-                                status4.setText(automate4.status.toString());
-                                students4.setText(String.valueOf(automate4.current_student));
-                                if (status4.getText().equals("Payment")) {
-                                    sum4.setText(String.valueOf(automate4.getEarnings()));
-                                    products4.setText(automate4.toString());
-                                }
-                                break;
-                        }
-                    }
-                };
-
-                Thread thread1=new Thread(new AnotherRunnable(automate1));
-                Thread thread2=new Thread(new AnotherRunnable(automate2));
-                Thread thread3=new Thread(new AnotherRunnable(automate3));
-                Thread thread4=new Thread(new AnotherRunnable(automate4));
+                Thread thread1=new Thread(new AnotherRunnable(automate1, handler));
+                Thread thread2=new Thread(new AnotherRunnable(automate2, handler));
+                Thread thread3=new Thread(new AnotherRunnable(automate3, handler));
+                Thread thread4=new Thread(new AnotherRunnable(automate4, handler));
 
                 thread1.start();
                 thread2.start();
@@ -265,16 +224,20 @@ public class MainActivity extends FragmentActivity {
     }
 
     class AnotherRunnable implements Runnable{
-        Automate automate;
+        private Automate automate;
+        private Handler handler;
+
+
+        public AnotherRunnable(Automate vendingMachine, Handler handler) {
+            this.automate = vendingMachine;
+            this.handler = handler;
+        }
 
         public int Choose(Automate automate){
             String type = automate.getName();
             return Integer.parseInt(type);
         }
 
-        public AnotherRunnable(Automate automate){
-            this.automate = automate;
-        }
         @Override
         public void run() {
             int i = Choose(automate);
@@ -282,7 +245,7 @@ public class MainActivity extends FragmentActivity {
                 automate.current_student=student.getNumber();
                 automate.status= Status.Reception;
                 handler.sendEmptyMessage(i);
-                //здесь что-то нужно вернуть в основной поток
+
                 int temp = (int)(Math.random()*3+1);
                 try {
                     TimeUnit.SECONDS.sleep(temp);
@@ -293,22 +256,22 @@ public class MainActivity extends FragmentActivity {
                 if (flag){
                     automate.status = Status.Payment;
                     handler.sendEmptyMessage(i);
-                    //здесь что-то нужно вернуть в основной поток
+
                     student.buy_product(automate);
 
                     automate.status = Status.Delivery;
                     handler.sendEmptyMessage(i);
-                    //здесь что-то нужно вернуть в основной поток
+
                     automate.issue();
                     automate.current_student=0;
 
                 }
                 handler.sendEmptyMessage(i);
-                //здесь что-то нужно вернуть в основной поток
+
                 automate.issue();
                 automate.current_student=0;
                 handler.sendEmptyMessage(i);
-                //здесь что-то нужно вернуть в основной поток
+
             }
         }
     }
