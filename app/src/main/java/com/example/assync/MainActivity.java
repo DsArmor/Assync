@@ -1,6 +1,7 @@
 package com.example.assync;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -9,6 +10,8 @@ import android.annotation.SuppressLint;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,12 +54,15 @@ public class MainActivity extends FragmentActivity {
     List<Student> queue3 = new ArrayList<>();
     List<Student> queue4 = new ArrayList<>();
 
+    VendingMachineFragment current_fragment;
+
     VendingMachineFragment fragment1 = VendingMachineFragment.newInstance();
     VendingMachineFragment fragment2 = VendingMachineFragment.newInstance();
     VendingMachineFragment fragment3 = VendingMachineFragment.newInstance();
     VendingMachineFragment fragment4 = VendingMachineFragment.newInstance();
 
     Handler handler = new Handler(){
+
         @SuppressLint("HandlerLeak")
         @Override
         public void handleMessage(Message msg) {
@@ -93,6 +99,33 @@ public class MainActivity extends FragmentActivity {
                         fragment4.sum1.setText(String.valueOf(automate4.getEarnings()));
                         fragment4.products1.setText(automate4.toString());
                     }
+                    break;
+                case 5:
+                    fragment1.machine1.setText(fragment1.automate.getName());
+                    fragment1.status1.setText(automate1.status.toString());
+                    fragment1.students1.setText(String.valueOf(automate1.current_student));
+                    fragment1.sum1.setText(String.valueOf(automate1.getEarnings()));
+                    fragment1.products1.setText(automate1.toString());
+                case 6:
+                    fragment2.machine1.setText(fragment2.automate.getName());
+                    fragment2.status1.setText(automate2.status.toString());
+                    fragment2.students1.setText(String.valueOf(automate2.current_student));
+                    fragment2.sum1.setText(String.valueOf(automate2.getEarnings()));
+                    fragment2.products1.setText(automate2.toString());
+                    break;
+                case 7:
+                    fragment3.machine1.setText(fragment3.automate.getName());
+                    fragment3.status1.setText(automate3.status.toString());
+                    fragment3.students1.setText(String.valueOf(automate3.current_student));
+                    fragment3.sum1.setText(String.valueOf(automate3.getEarnings()));
+                    fragment3.products1.setText(automate3.toString());
+                    break;
+                case 8:
+                    fragment4.machine1.setText(fragment4.automate.getName());
+                    fragment4.status1.setText(automate4.status.toString());
+                    fragment4.students1.setText(String.valueOf(automate4.current_student));
+                    fragment4.sum1.setText(String.valueOf(automate4.getEarnings()));
+                    fragment4.products1.setText(automate4.toString());
                     break;
             }
         }
@@ -152,6 +185,7 @@ public class MainActivity extends FragmentActivity {
         transaction.add(R.id.frame2, fragment2);
         transaction.add(R.id.frame3, fragment3);
         transaction.add(R.id.frame4, fragment4);
+
         transaction.commit();
 
         fragment1.automate=automate1;
@@ -185,6 +219,7 @@ public class MainActivity extends FragmentActivity {
         automate4.setName("4");
 
 
+
         //Загрузка продуктов в автомат
         add.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -197,6 +232,7 @@ public class MainActivity extends FragmentActivity {
                 fragment2.products1.setText(automate2.toString());
                 fragment3.products1.setText(automate3.toString());
                 fragment4.products1.setText(automate4.toString());
+
                 fragment1.machine1.setText(automate1.getName());
                 fragment2.machine1.setText(automate2.getName());
                 fragment3.machine1.setText(automate3.getName());
@@ -228,12 +264,21 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    public void Full(Fragment fragment){
+    public void Full(VendingMachineFragment fragment, Automate automate){
+
+        current_fragment = fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.fullscreen, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(fragment);
+        fragmentTransaction.commit();
+
+        fragmentManager.executePendingTransactions();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fullscreen, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        handler.sendEmptyMessage(Choose(automate)+4);
+
     }
 
     public int Choose(Automate automate){
@@ -286,4 +331,33 @@ public class MainActivity extends FragmentActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(current_fragment);
+        fragmentTransaction.commit();
+
+        fragmentManager.executePendingTransactions();
+        fragmentTransaction = fragmentManager.beginTransaction();
+
+        if (current_fragment==fragment1){
+            fragmentTransaction.replace(R.id.frame1, current_fragment);
+        } else
+            if (current_fragment==fragment2){
+                fragmentTransaction.replace(R.id.frame2, current_fragment);
+            } else
+                if (current_fragment==fragment3){
+                    fragmentTransaction.replace(R.id.frame3, current_fragment);
+                } else{
+                    fragmentTransaction.replace(R.id.frame4, current_fragment);
+                }
+        fragmentTransaction.add(R.id.fullscreen, current_fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        handler.sendEmptyMessage(Choose(current_fragment.automate));
+    }
+
 }

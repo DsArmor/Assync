@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -17,12 +18,7 @@ public class VendingMachineFragment extends Fragment {
     TextView students1;
     Automate automate;
 
-    Automate current_automate;
     VendingMachineFragment fragment = this;
-
-    public VendingMachineFragment() {
-        // Required empty public constructor
-    }
 
     public static VendingMachineFragment newInstance(){
         VendingMachineFragment fragment = new VendingMachineFragment();
@@ -48,15 +44,7 @@ public class VendingMachineFragment extends Fragment {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).Full(fragment);
-                ViewGroup.LayoutParams params = view.getLayoutParams();
-                if (params.height == 120) {
-                    params.height = 700;
-                }
-                else {
-                    params.height = 120;
-                }
-                view.setLayoutParams(params);
+                ((MainActivity)getActivity()).Full(fragment, automate);
             }
         });
         return view;
