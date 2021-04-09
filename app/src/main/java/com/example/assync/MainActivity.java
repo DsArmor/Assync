@@ -54,8 +54,6 @@ public class MainActivity extends FragmentActivity {
     List<Student> queue3 = new ArrayList<>();
     List<Student> queue4 = new ArrayList<>();
 
-    VendingMachineFragment current_fragment;
-
     VendingMachineFragment fragment1 = VendingMachineFragment.newInstance();
     VendingMachineFragment fragment2 = VendingMachineFragment.newInstance();
     VendingMachineFragment fragment3 = VendingMachineFragment.newInstance();
@@ -218,8 +216,6 @@ public class MainActivity extends FragmentActivity {
         automate3.setName("3");
         automate4.setName("4");
 
-
-
         //Загрузка продуктов в автомат
         add.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -260,13 +256,17 @@ public class MainActivity extends FragmentActivity {
                 thread2.start();
                 thread3.start();
                 thread4.start();
+
+                handler.sendEmptyMessage(Choose(fragment1.automate));
+                handler.sendEmptyMessage(Choose(fragment2.automate));
+                handler.sendEmptyMessage(Choose(fragment3.automate));
+                handler.sendEmptyMessage(Choose(fragment4.automate));
             }
         });
     }
 
     public void Full(VendingMachineFragment fragment, Automate automate){
 
-        current_fragment = fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.remove(fragment);
@@ -274,8 +274,7 @@ public class MainActivity extends FragmentActivity {
 
         fragmentManager.executePendingTransactions();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fullscreen, fragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.fullscreen, fragment);
         fragmentTransaction.commit();
         handler.sendEmptyMessage(Choose(automate)+4);
 
@@ -334,30 +333,22 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        // super.onBackPressed();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.remove(current_fragment);
-        fragmentTransaction.commit();
+        fragmentManager.beginTransaction().remove(fragment1).commit();
+        fragmentManager.beginTransaction().remove(fragment2).commit();
+        fragmentManager.beginTransaction().remove(fragment3).commit();
+        fragmentManager.beginTransaction().remove(fragment4).commit();
 
         fragmentManager.executePendingTransactions();
-        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentManager.beginTransaction().add(R.id.frame1, fragment1).commit();
+        fragmentManager.beginTransaction().add(R.id.frame2, fragment2).commit();
+        fragmentManager.beginTransaction().add(R.id.frame3, fragment3).commit();
+        fragmentManager.beginTransaction().add(R.id.frame4, fragment4).commit();
 
-        if (current_fragment==fragment1){
-            fragmentTransaction.replace(R.id.frame1, current_fragment);
-        } else
-            if (current_fragment==fragment2){
-                fragmentTransaction.replace(R.id.frame2, current_fragment);
-            } else
-                if (current_fragment==fragment3){
-                    fragmentTransaction.replace(R.id.frame3, current_fragment);
-                } else{
-                    fragmentTransaction.replace(R.id.frame4, current_fragment);
-                }
-        fragmentTransaction.add(R.id.fullscreen, current_fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        handler.sendEmptyMessage(Choose(current_fragment.automate));
+        handler.sendEmptyMessage(Choose(fragment1.automate)+4);
+        handler.sendEmptyMessage(Choose(fragment2.automate)+4);
+        handler.sendEmptyMessage(Choose(fragment3.automate)+4);
+        handler.sendEmptyMessage(Choose(fragment4.automate)+4);
     }
 
 }
